@@ -6,12 +6,14 @@ import safety_gym  # noqa
 import numpy as np  # noqa
 
 def run_random(env_name):
-    env = gym.make(env_name)
+    env_to_wrap = gym.make(env_name)
+    env = gym.wrappers.Monitor(env_to_wrap, "/mujoco_py")
     obs = env.reset()
     done = False
     ep_ret = 0
     ep_cost = 0
-    while True:
+    i=0
+    while not done:
         if done:
             print('Episode Return: %.3f \t Episode Cost: %.3f'%(ep_ret, ep_cost))
             ep_ret, ep_cost = 0, 0
@@ -23,7 +25,8 @@ def run_random(env_name):
         # print('reward', reward)
         ep_ret += reward
         ep_cost += info.get('cost', 0)
-        env.render()
+    env.close()
+    env_to_wrap.close()
 
 
 if __name__ == '__main__':
